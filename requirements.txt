@@ -1,0 +1,6 @@
+requests>=2.31
+beautifulsoup4>=4.12
+tqdm>=4.66
+
+# para rodar os testes
+pytest>=8.0

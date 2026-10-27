@@ -1,0 +1,22 @@
+# Configuração para o blog falso de demonstração (tests/fake_site.py).
+#
+#   1) Em um terminal:   python tests/fake_site.py
+#   2) Em outro:         python -m scraper -c config.demo.toml
+#
+# As opções que não aparecem aqui usam o valor padrão (veja config.toml).
+
+[site]
+start_url = "http://127.0.0.1:8000/"
+post_link_selector = "h2.entry-title a"
+next_page_selector = "a.next"
+
+[post]
+content_selector = "article"
+
+[files]
+download_dir = "demo/downloads"
+output_dir = "demo/output"
+
+[http]
+delay = 0.3
+max_retries = 1

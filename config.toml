@@ -1,0 +1,95 @@
+# =====================================================================
+#  POCScraper - configuração
+#
+#  Ajuste os valores para o site que você quer percorrer.
+#  Para descobrir os seletores CSS: abra o site no navegador, clique com
+#  o botão direito no elemento > "Inspecionar" e veja as tags e classes.
+#
+#  Teste a configuração antes de baixar tudo:
+#      python -m scraper --dry-run --max-posts 3
+# =====================================================================
+
+[site]
+# Página principal, onde os posts são listados.
+# TROQUE "DOMINIO" e "SERVICO" pelo endereço real da página do criador (a aba "Posts").
+start_url = ""
+
+# Seletor CSS dos links que levam a cada post, na página principal.
+# Pode apontar para o próprio <a> ou para um elemento que contém o <a>.
+# Exemplos comuns: "h2.entry-title a" (WordPress), "article h2 a", ".post-title a"
+# Aqui cada post é um <article class="post-card"> com um único <a> envolvendo o card inteiro.
+post_link_selector = "article.post-card > a"
+
+# Seletor CSS do título, procurado dentro do elemento acima ("" = usa o texto do link).
+# Necessário quando o link envolve o card inteiro: sem ele o título viraria
+# "Título 2026-10-08 15:28 5 attachments". Com ele, o título da listagem também
+# tem prioridade sobre o título da página do post.
+post_title_selector = ".post-card__header"
+
+# Seletor CSS do link "próxima página" da listagem ("" = sem paginação).
+# Exemplos: "a.next", "a[rel=next]", ".pagination .next a"
+# Aqui é o botão ">" do paginador (50 posts por página, ?o=50, ?o=100...); na última
+# página ele vira um <li> desabilitado, sem link, e a paginação termina sozinha.
+next_page_selector = "a.next"
+
+# Máximo de páginas da listagem a percorrer (0 = todas).
+max_pages = 0
+
+[post]
+# Seletor CSS da área de conteúdo do post. O link de download só é procurado
+# dentro dela, para não pegar links do menu, da barra lateral ou do rodapé.
+# Use "" para procurar na página inteira.
+# Fica "" até a página de um post ser conferida (só a listagem foi analisada).
+content_selector = ""
+
+# Seletor CSS do link de download. Se ficar "", o link é detectado automaticamente
+# pelas palavras-chave e extensões abaixo. Como o texto do link pode mudar de post
+# para post, prefira seletores pela posição ou pelo endereço do link, não pelo texto.
+# Exemplos: "a.download-button", "a[href*='/uploads/']", ".entry-content p > a"
+download_link_selector = ""
+
+# true = baixa todos os links de download do post; false = só o mais provável.
+# Os posts têm vários anexos ("5 attachments"), então todos.
+download_all_links = true
+
+# Detecção automática: palavras procuradas no texto, na classe, no id e na URL do link
+# (sem diferenciar maiúsculas nem acentos)...
+keywords = ["download", "baixar", "baixe", "descarregar"]
+
+# ...e extensões de arquivo, reconhecidas no fim da URL e também no texto do link
+# (ex.: um link escrito "Projeto Final v2.zip"). Adicione as que precisar (ex.: ".exe", ".apk").
+extensions = [
+    ".zip", ".rar", ".7z", ".tar", ".gz", ".bz2", ".xz",
+    ".pdf", ".epub", ".mobi", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".csv",
+    ".mp3", ".flac", ".wav", ".ogg", ".m4a", ".mp4", ".mkv", ".avi", ".mov", ".webm",
+    ".iso",
+    # imagens: os anexos deste site são, na maioria, imagens
+    ".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp", ".psd",
+]
+
+[files]
+# Pasta dos arquivos baixados (caminho relativo a este arquivo de configuração).
+download_dir = "downloads"
+
+# Pasta dos relatórios: falhas.csv, baixados.csv, scraper.log e estado.db.
+output_dir = "output"
+
+# true = salva os arquivos de cada post numa subpasta com o título do post.
+subfolder_per_post = true
+
+[http]
+# Identificação enviada ao servidor em cada requisição.
+user_agent = "POCScraper/0.1 (projeto de estudo)"
+
+# Tempo máximo (segundos) esperando resposta do servidor.
+timeout = 30
+
+# Pausa mínima (segundos) entre uma requisição e outra, para não sobrecarregar o site.
+# Se o robots.txt pedir uma pausa maior (Crawl-delay), ela é respeitada.
+delay = 1.0
+
+# Novas tentativas em erros temporários (conexão, 429, 5xx, download interrompido).
+max_retries = 3
+
+# Respeitar o robots.txt do site. URLs proibidas vão para a lista de falhas.
+respect_robots_txt = true
